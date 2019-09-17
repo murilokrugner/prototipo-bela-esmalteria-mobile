@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import logo from '~/assets/logo.png';
 
 import Background from '~/components/Background';
 import Input from '~/components/Input';
 
+import { recoverPasswordRequest } from '~/store/modules/password/actions';
+
 import { Container, Form, FormInput, SubmitButton, SignLink, SignLinkText } from './styles';
 
 export default function Password({ navigation }) {
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState('');
+
+  const loading = useSelector(state => state.auth.loading);
+
+  function handleSubmit() {
+    dispatch(recoverPasswordRequest(email));
+  };
+
   return (
     <Background>
       <Container>
@@ -21,9 +34,13 @@ export default function Password({ navigation }) {
           autoCorrect={false}
           autoCapitalize="none"
           placeholder="Digite seu e-mail para recuperar"
+          returnKeyType="send"
+          onSubmitEditing={handleSubmit}
+          value={email}
+          onChangeText={setEmail}
         />
 
-        <SubmitButton onPress={() => {}}>Enviar</SubmitButton>
+        <SubmitButton loading={loading} onPress={() => {}}>Enviar</SubmitButton>
         </Form>
 
         <SignLink onPress={() => {navigation.navigate('SignIn')}}>
